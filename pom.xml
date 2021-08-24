@@ -132,6 +132,16 @@
 				</configuration>
 			</plugin>
 		</plugins>
+
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+
+			<resource>
+				<directory>src/main/java/com/example/demo2/study/beanlifecycle</directory>
+			</resource>
+		</resources>
 	</build>
 
 </project>
