@@ -91,7 +91,26 @@
 			<version>1.2.37</version>
 		</dependency>
 
-	</dependencies>
+		<dependency>
+			<groupId>org.example</groupId>
+			<artifactId>analyzerExcel</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/lib/analyzerExcel1.0.jar</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>cn.afterturn</groupId>
+			<artifactId>easypoi-base</artifactId>
+			<version>4.4.0</version>
+		</dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>1.9.4</version>
+        </dependency>
+
+    </dependencies>
 
 	<build>
 		<!-- 打包时jar名称 -->

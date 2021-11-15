@@ -4,10 +4,15 @@ server:
 spring:
   # 数据源配置
   datasource:
-#    driver-class-name: com.mysql.jdbc.Driver # mysql的驱动你可以配置别的关系型数据库
+    driver-class-name: com.mysql.jdbc.Driver # mysql的驱动你可以配置别的关系型数据库
     url: jdbc:mysql://localhost:3306/world #数据源地址  ?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=UTC
     username: root # 用户名
     password: 123456a? # 密码
+  servlet:
+    multipart:
+      max-file-size: 10MB
+
+
 
 
 #    ds1: #数据源1

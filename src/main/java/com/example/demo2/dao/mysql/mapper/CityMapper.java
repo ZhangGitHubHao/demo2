@@ -1,5 +1,6 @@
 package com.example.demo2.dao.mysql.mapper;
 
+import com.example.demo2.annotation.ElapsedTime;
 import com.example.demo2.dao.mysql.model.City;
 import com.example.demo2.dao.mysql.model.CityCriteria;
 import java.util.List;
@@ -44,6 +45,7 @@ public interface CityMapper {
     @InsertProvider(type=CitySqlProvider.class, method="insertSelective")
     int insertSelective(City record);
 
+    @ElapsedTime
     @SelectProvider(type=CitySqlProvider.class, method="selectByExample")
     @Results({
         @Result(column="ID", property="id", jdbcType=JdbcType.INTEGER, id=true),
