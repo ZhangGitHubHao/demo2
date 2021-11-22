@@ -25,7 +25,7 @@ public class WebServiceImpl implements WebService {
     @Autowired
     CityMapper cityMapper;
 
-    @Value(value = "${spring.servlet.multipart.max-file-size}")
+    @Value(value = "${my.servlet.multipart.max-file-size}")
     String name;
 
     @Async
