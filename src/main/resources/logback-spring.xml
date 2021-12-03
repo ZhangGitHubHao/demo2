@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--scan:当此属性设置为true时，配置文件如果发生改变，将会被重新加载，默认值为true。-->
+<!--debug:当此属性设置为true时，将打印出logback内部日志信息，实时查看logback运行状态。默认值为false。-->
+<!--scanPeriod:设置监测配置文件是否有修改的时间间隔，如果没有给出时间单位，默认单位是毫秒。当scan为true时，此属性生效。默认的时间间隔为1分钟。-->
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+
+    <!-- 全局变量 -->
+    <!--日志文件保存路径，多环境配置下，通过 application.yml 传递参数过来-->
+    <springProperty scope="context" name="logPath" source="logging.file.path" defaultValue="logs"/>
+    <!--应用名称-->
+    <springProperty scope="context" name="appName" source="spring.application.name" defaultValue="springBoot"/>
+
+    <!-- 通用日志文件输出appender -->
+    <appender name="COMMON_FILE_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--日志名称，如果没有File 属性，那么只会使用FileNamePattern的文件路径规则
+            如果同时有<File>和<FileNamePattern>，那么当天日志是<File>，明天会自动把今天
+            的日志改名为今天的日期。即，<File> 的日志都是当天的。
+        -->
+        <File>${logPath}/${appName}.log</File>
+        <!--滚动策略，按照大小和时间滚动 SizeAndTimeBasedRollingPolicy-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!--日志文件输出的文件名，文件名附带.gz将会自动压缩日志-->
+            <fileNamePattern>${logPath}/%d{yyyy-MM-dd}/${appName}-%d{yyyy-MM-dd}_%i.log</fileNamePattern>
+            <!-- 日志文件最大尺寸 -->
+            <maxFileSize>200MB</maxFileSize>
+            <!--日志文件保留天数-->
+            <MaxHistory>30</MaxHistory>
+        </rollingPolicy>
+        <!--日志输出编码格式化-->
+        <encoder>
+            <charset>UTF-8</charset>
+<!--            <pattern>%d{HH:mm:ss.SSS} %contextName [%thread] %-5level %logger{36} - %msg%n</pattern>-->
+            <pattern>%d [%thread] %-5level %logger{36} %line : %msg%n</pattern>
+        </encoder>
+    </appender>
+
+
+    <!-- 本地开发控制栏彩色日志 -->
+    <!-- 彩色日志依赖的渲染类 -->
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
+    <conversionRule conversionWord="wex"
+                    converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter"/>
+    <conversionRule conversionWord="wEx"
+                    converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter"/>
+    <!-- 彩色日志格式 -->
+    <property name="CONSOLE_LOG_PATTERN"
+              value="${CONSOLE_LOG_PATTERN:-%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
+
+    <!-- Console 输出设置 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+
+        <!-- LevelFilter 对指定level的日志进行记录(或不记录)，对不等于指定level的日志不记录(或进行记录)，用于只输出指定级别的业务场景 -->
+<!--        <filter class="ch.qos.logback.classic.filter.LevelFilter">-->
+<!--            <level>info</level>-->
+<!--            &lt;!&ndash;匹配到就允许&ndash;&gt;-->
+<!--            <onMatch>ACCEPT</onMatch>-->
+<!--            &lt;!&ndash;没有匹配到就禁止&ndash;&gt;-->
+<!--            <onMismatch>DENY</onMismatch>-->
+<!--        </filter>-->
+
+        <!-- ThresholdFilter 对大于或等于指定level的日志进行记录(或不记录)，对小于指定level的日志不记录(或进行记录) 提示：info级别是大于debug的 -->
+<!--        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">-->
+<!--            <level>warn</level>-->
+<!--            &lt;!&ndash; 这里不知道怎么就是不支持onMatch和onMismatch 只能过滤掉低级别日志,无法记录低级别日志&ndash;&gt;-->
+<!--            &lt;!&ndash;匹配到就禁止&ndash;&gt;-->
+<!--            <onMatch>DENY</onMatch>-->
+<!--            &lt;!&ndash;没有匹配到就允许&ndash;&gt;-->
+<!--            <onMismatch>ACCEPT</onMismatch>-->
+<!--        </filter>-->
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 开发环境,多个使用逗号隔开,本地开发环境只输出控制台日志,记得要在application.yml中配置spring:profiles:active: dev-->
+    <springProfile name="dev">
+        <!-- 控制台不打印tomcat启动过程中的JAR包扫描警告，这里可以单独处理特殊包或类打印的日志，比如单独输出到其他的日志文件中 -->
+        <!-- additivity="false"表示不进行上报了，配置了appender就由配置的appender处理，没配置就不记录了，true表示自己处理完了，root还要再处理一次 -->
+        <!-- level="info" 表示info及info以上都会经过此logger -->
+<!--        <logger name="o.a.tomcat.util.scan.StandardJarScanner" level="info" additivity="false">-->
+<!--            <appender-ref ref="CONSOLE"/>-->
+<!--        </logger>-->
+        <!--指定最基础的日志输出级别-->
+        <root level="info">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+
+    <!-- 测试环境,多个使用逗号隔开,测试环境输出INFO级别日志,只以文件形式输出-->
+    <springProfile name="test">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="COMMON_FILE_LOG"/>
+        </root>
+    </springProfile>
+
+    <!-- 生产环境,多个使用逗号隔开,生产环境输出ERROR级别日志,只以文件形式输出-->
+    <springProfile name="prod">
+        <root level="ERROR">
+            <appender-ref ref="COMMON_FILE_LOG"/>
+        </root>
+    </springProfile>
+
+</configuration>

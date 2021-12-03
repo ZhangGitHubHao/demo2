@@ -5,12 +5,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
  * @author zhanghao
  * @date 2021-11-22
  */
+@SuppressWarnings("ArrayEquals")
 public class SchedulingRunnable implements Runnable{
     private static final Logger logger = LoggerFactory.getLogger(SchedulingRunnable.class);
 
@@ -80,7 +82,7 @@ public class SchedulingRunnable implements Runnable{
 
         return beanName.equals(that.beanName) &&
                 methodName.equals(that.methodName) &&
-                params.equals(that.params);
+                Arrays.equals(params,that.params);
     }
 
     @Override
@@ -89,6 +91,6 @@ public class SchedulingRunnable implements Runnable{
             return Objects.hash(beanName, methodName);
         }
 
-        return Objects.hash(beanName, methodName, params);
+        return Objects.hash(beanName, methodName, Arrays.hashCode(params));
     }
 }

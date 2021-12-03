@@ -2,6 +2,12 @@ server:
   port: 8080
 
 spring:
+#  servlet:
+#    multipart:
+#      max-file-size: 100MB
+#      max-request-size: 100MB
+  profiles:
+    active: dev
   # 数据源配置
   datasource:
     driver-class-name: com.mysql.jdbc.Driver # mysql的驱动你可以配置别的关系型数据库
@@ -9,10 +15,12 @@ spring:
     username: root # 用户名
     password: 123456a? # 密码
 
+
+
 my:
   servlet:
     multipart:
-      max-file-size: 10MB
+      max-file-size: 100MB
 
 
 
