@@ -45,6 +45,7 @@ public class UploadController {
         // 分片上传任务ID,将多个请求关联,最终组合成一个文件
         String uuid = multipartFileForm.getUuid();
 
+        // 命名格式：xxx_数字.tem，方便下面排序
         File uploadFile = new File(FILE_UPLOAD_TEMP_DIR + "/" + uuid, uuid + name + "_" + index + ".tem");
 
         if (!uploadFile.getParentFile().exists()) {
